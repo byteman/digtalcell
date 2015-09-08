@@ -1,0 +1,11 @@
+DSB01
+si
+*.bin
+*.50030
+/Project/MDK-ARM/*.Newton
+/Project/MDK-ARM/*.thinkpad
+/Project/MDK-ARM/*.Star
+*.bak
+/Project/MDK-ARM/*.dep
+*.map
+/Project/MDK-ARM/STM32L152D-EVAL/*.lst
