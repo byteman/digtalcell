@@ -312,7 +312,7 @@ void Ptl_CMD_CLK()
 
 	if(g_Reciv_Bufer[3] == '?')
 	{
-		g_Send_Num = sprintf(g_Send_Bufer,"CLK?%7d",g_ParaUser.LWT);	
+		g_Send_Num = sprintf(g_Send_Bufer,"CLK?%d",g_ParaUser.LWT);	
 	}
 	else if(g_Reciv_Bufer[3] == '\0')
 	{
