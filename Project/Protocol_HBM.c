@@ -293,10 +293,10 @@ void Ptl_back_CLK(INT32S avg)
 {
 	if((avg > -1000000)&&(avg < 1000000))
 	{
-		g_ParaUser.LDW = avg;
+		g_ParaUser.LWT = avg;
 		Wet_InitPara();
 		if(Ptl_Save())
-			g_Send_Num = sprintf(g_Send_Bufer,"CLK:0:%d",g_ParaUser.LDW); //设置参数的返回
+			g_Send_Num = sprintf(g_Send_Bufer,"CLK:0:%d",g_ParaUser.LWT); //设置参数的返回
 		else 
 			g_Send_Num = sprintf(g_Send_Bufer,"CKL:2"); //设置参数的返回
 	}
@@ -1525,6 +1525,9 @@ void	Ptl_Executes(void)
 		Ptl_Load();
 	else if((g_Reciv_Bufer[0] == 'A')&&(g_Reciv_Bufer[1] == 'D')&&(g_Reciv_Bufer[2] == 'V'))
 		Ptl_CMD_AD();
+	else if((g_Reciv_Bufer[0] == 'C')&&(g_Reciv_Bufer[1] == 'L')&&(g_Reciv_Bufer[2] == 'Z'))Ptl_CMD_CLZ();
+	else if((g_Reciv_Bufer[0] == 'C')&&(g_Reciv_Bufer[1] == 'L')&&(g_Reciv_Bufer[2] == 'W'))Ptl_CMD_CLW();
+	else if((g_Reciv_Bufer[0] == 'C')&&(g_Reciv_Bufer[1] == 'L')&&(g_Reciv_Bufer[2] == 'K'))Ptl_CMD_CLK();
 /*密码保护命令******************************************************************************************/
 	if((g_Flg_Unlocked == TRUE)||(g_Reciv_Bufer[3] == '?'))
 	{	 
@@ -1537,9 +1540,7 @@ void	Ptl_Executes(void)
 		else if((g_Reciv_Bufer[0] == 'L')&&(g_Reciv_Bufer[1] == 'D')&&(g_Reciv_Bufer[2] == 'W'))Ptl_CMD_LDW();
 		else if((g_Reciv_Bufer[0] == 'L')&&(g_Reciv_Bufer[1] == 'W')&&(g_Reciv_Bufer[2] == 'T'))Ptl_CMD_LWT();
 		
-		else if((g_Reciv_Bufer[0] == 'C')&&(g_Reciv_Bufer[1] == 'L')&&(g_Reciv_Bufer[2] == 'Z'))Ptl_CMD_CLZ();
-		else if((g_Reciv_Bufer[0] == 'C')&&(g_Reciv_Bufer[1] == 'L')&&(g_Reciv_Bufer[2] == 'W'))Ptl_CMD_CLW();
-		else if((g_Reciv_Bufer[0] == 'C')&&(g_Reciv_Bufer[1] == 'L')&&(g_Reciv_Bufer[2] == 'K'))Ptl_CMD_CLK();
+	
 		
 		else if((g_Reciv_Bufer[0] == 'N')&&(g_Reciv_Bufer[1] == 'O')&&(g_Reciv_Bufer[2] == 'V'))	/*NOV*/
 			Ptl_Para32s_wr(&g_ParaUser.NOV,0,1599999);
