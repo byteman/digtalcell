@@ -323,15 +323,10 @@ void Ptl_CMD_CLK()
 	{
 		if((g_Reciv_Pt > 5)&&(g_Reciv_Pt < 14))			//参数加符号最多8个字符
 		{
-			tmp = Lib_ChrToLon((char*)&g_Reciv_Bufer[4]);
-			if((tmp > -100000)&&(tmp < 100000))
-			{
-				g_ParaUser.CWT= tmp;
-				if(Wet_StartAvg(30,Ptl_back_CLK) == FALSE)	
-					g_Send_Num = sprintf(g_Send_Bufer,"CLK:1");	
-			}
-			else
-				g_Send_Num = sprintf(g_Send_Bufer,"CLK:2");
+			tmp = Lib_ChrToLon((char*)&g_Reciv_Bufer[4]);		
+			g_ParaUser.CWT= tmp;
+			if(Wet_StartAvg(30,Ptl_back_CLK) == FALSE)	
+				g_Send_Num = sprintf(g_Send_Bufer,"CLK:1");	
 		}
 		else
 			g_Send_Num = sprintf(g_Send_Bufer,"CLK:3");
@@ -913,6 +908,21 @@ void	Ptl_CMD_CDL(void)
 	else
 		g_Send_Num = sprintf(g_Send_Bufer,"?\r\n");			
 }
+void Ptl_CMD_SAV()
+{
+	Std_ReturnType	rtn;
+	if(g_Reciv_Bufer[3] == '1')		//Saving current parameters to the EEPROM
+	{
+		rtn = Para_Save_block(EE_ADDR_USER,(INT8U*)&g_ParaUser,sizeof(PARA_USER));
+		if(rtn == TRUE)
+		{
+			Wet_InitPara();
+			g_Send_Num = sprintf(g_Send_Bufer,"SAV:0");
+		}
+		else
+			g_Send_Num = sprintf(g_Send_Bufer,"SAV:1");
+	}
+}
 /*Special commands/functions (TDD, RES, DPW, SPW, IDN, ASS)******************************/
 /*TDD*/
 void	Ptl_CMD_TDD(void)
@@ -1215,13 +1225,13 @@ void	Ptl_Para_wr()
 		g_ParaUser.RSN = (tmp>>3); //resolution 
 		
 		g_ParaUser.DPT = g_Reciv_Bufer[i++]; //digtal point num
-		memcpy(g_ParaUser.ENU,g_Reciv_Bufer+i,2);
-		i+=2;
-		g_ParaUser.ENU[4] = 0;
-		if(Ptl_Save())
+		memset(g_ParaUser.ENU,0,5);
+		memcpy(g_ParaUser.ENU,g_Reciv_Bufer+i,3);
+		i+=3;
+		//if(Ptl_Save())
 			g_Send_Num = sprintf(g_Send_Bufer,"PAR:0"); //设置参数的返回
-		else 
-			g_Send_Num = sprintf(g_Send_Bufer,"PAR:1"); //设置参数的返回
+		//else 
+		//	g_Send_Num = sprintf(g_Send_Bufer,"PAR:1"); //设置参数的返回
 	}
 
 }
@@ -1474,6 +1484,7 @@ void	Ptl_Executes(void)
 	else if((g_Reciv_Bufer[0] == 'C')&&(g_Reciv_Bufer[1] == 'D')&&(g_Reciv_Bufer[2] == 'L'))Ptl_CMD_CDL();
 	/*Special commands/functions(TDD, RES, SPW, IDN, ASS >>> TYP)*/
 	else if((g_Reciv_Bufer[0] == 'T')&&(g_Reciv_Bufer[1] == 'D')&&(g_Reciv_Bufer[2] == 'D'))Ptl_CMD_TDD();
+	else if((g_Reciv_Bufer[0] == 'S')&&(g_Reciv_Bufer[1] == 'A')&&(g_Reciv_Bufer[2] == 'V'))Ptl_CMD_SAV();
 	else if((g_Reciv_Bufer[0] == 'R')&&(g_Reciv_Bufer[1] == 'E')&&(g_Reciv_Bufer[2] == 'S'))Ptl_CMD_RES();
 	else if((g_Reciv_Bufer[0] == 'S')&&(g_Reciv_Bufer[1] == 'P')&&(g_Reciv_Bufer[2] == 'W'))Ptl_CMD_SPW();
 	else if((g_Reciv_Bufer[0] == 'D')&&(g_Reciv_Bufer[1] == 'P')&&(g_Reciv_Bufer[2] == 'W'))Ptl_CMD_DPW();
